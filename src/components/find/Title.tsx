@@ -19,7 +19,7 @@ const Title = ({ title }: Props) => {
             <svg aria-label="Rating" className={styles.rating__icon}>
               <use className={styles.rating__use} href='/svg/sprite.svg#icon-rating'></use>
             </svg>
-           {title.rating.score} ({formatNumber(title.rating.voteCount)})
+           {title.rating.score} ({formatNumber(title.rating.voteCount ?? 0)})
           </li>
         )}
       </ul>

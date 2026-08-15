@@ -1,60 +1,52 @@
-import RawFind from "src/interfaces/misc/rawFind";
-import { htmlToText } from "src/utils/helpers";
+import RawFind from 'src/interfaces/misc/rawFind';
+import { resultTypes, resultTitleTypes } from 'src/utils/constants/find';
 
-const cleanFind = (rawFind: RawFind) => {
-  const {
-    props: { pageProps: d },
-  } = rawFind;
+type QueryMeta = { exact: boolean; s: string | null; ttype: string | null };
 
+const cleanFind = (data: RawFind, queryMeta: QueryMeta) => {
   const cleanData = {
     meta: {
-      exact: d.findPageMeta.isExactMatch,
-      type: d.findPageMeta.searchType || null,
-      titleType: d.findPageMeta.titleSearchType?.[0] || null,
+      exact: queryMeta.exact,
+      type: resultTypes.types.find(t => t.val === queryMeta.s)?.id ?? null,
+      titleType: resultTitleTypes.types.find(t => t.val === queryMeta.ttype)?.id ?? null,
     },
-    people: d.nameResults.results.map(({listItem: person}) => ({
-      id: person.nameId,
-      name: person.nameText,
-      bio: person.bio ? htmlToText(person.bio).slice(0, 150) + "..." : null,
-      professions: person.professions || null,
-      knownForTitle: person.knownFor?.titleText || null,
-      knownInYear: person.knownFor?.yearRange?.year || null,
-      ...(person.primaryImage && {
-        image: {
-          url: person.primaryImage.url,
-          caption: person.primaryImage.caption,
-        },
+    people: data.nameResults.edges.map(({ node: { entity: p } }) => ({
+      id: p.id,
+      name: p.nameText.text,
+      bio: p.bio?.text?.plainText ? p.bio.text.plainText.slice(0, 150) + '...' : null,
+      professions: p.primaryProfessions?.map(pr => pr.category.text) ?? null,
+      knownForTitle: p.knownFor?.edges?.[0]?.node.credit.title.titleText.text ?? null,
+      knownInYear: p.knownFor?.edges?.[0]?.node.credit.title.releaseYear?.year ?? null,
+      ...(p.primaryImage && {
+        image: { url: p.primaryImage.url, caption: p.primaryImage.caption?.plainText ?? null },
       }),
     })),
-    titles: d.titleResults.results.map(({listItem: title}) => ({
-      id: title.titleId,
-      name: title.titleText,
-      type: title.titleType.text,
-      plot: title.plot,
-      releaseYear: title.releaseDate?.year || null,
-      runtime: title.runtime || null,
-      certificate: title.certificate || null,
+    titles: data.titleResults.edges.map(({ node: { entity: t } }) => ({
+      id: t.id,
+      name: t.titleText.text,
+      type: t.titleType.text,
+      plot: t.plot?.plotText?.plainText ?? null,
+      releaseYear: t.releaseYear?.year ?? null,
+      runtime: t.runtime?.seconds ?? null,
+      certificate: t.certificate?.rating ?? null,
       rating: {
-        score: title.ratingSummary.aggregateRating,
-        voteCount: title.ratingSummary.voteCount,
+        score: t.ratingsSummary?.aggregateRating ?? null,
+        voteCount: t.ratingsSummary?.voteCount ?? null,
       },
-      ...(title.primaryImage && {
-        image: {
-          url: title.primaryImage.url,
-          caption: title.primaryImage.caption,
-        },
+      ...(t.primaryImage && {
+        image: { url: t.primaryImage.url, caption: t.primaryImage.caption?.plainText ?? null },
       }),
     })),
-    companies: d.companyResults.results.map(company => ({
-      id: company.id,
-      name: company.companyName,
-      type: company.typeText,
-      country: company.countryText,
+    companies: data.companyResults.edges.map(({ node: { entity: c } }) => ({
+      id: c.id,
+      name: c.companyText.text,
+      type: c.companyTypes?.[0]?.text ?? null,
+      country: c.country?.text ?? null,
     })),
-    keywords: d.keywordResults.results.map(keyword => ({
-      id: keyword.id,
-      text: keyword.keywordText,
-      numTitles: keyword.numTitles,
+    keywords: data.keywordResults.edges.map(({ node: { entity: k } }) => ({
+      id: k.id,
+      text: k.text.text,
+      numTitles: k.titles?.total ?? null,
     })),
   };
 
