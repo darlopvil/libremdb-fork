@@ -1,7 +1,7 @@
 # Thanks @yordis on Github! https://github.com/vercel/next.js/discussions/16995#discussioncomment-132339
 
 # Install dependencies only when needed
-FROM node:lts-alpine AS deps
+FROM node:20-alpine AS deps
 
 WORKDIR /opt/app
 COPY package.json pnpm-lock.yaml ./
@@ -12,7 +12,7 @@ RUN pnpm install --frozen-lockfile
 # This is where because may be the case that you would try
 # to build the app based on some `X_TAG` in my case (Git commit hash)
 # but the code hasn't changed.
-FROM node:lts-alpine AS builder
+FROM node:20-alpine AS builder
 
 ENV NODE_ENV=production
 WORKDIR /opt/app
