@@ -143,6 +143,7 @@ export default interface RawTitle {
         metacritic?: {
           metascore: {
             score: number;
+            reviewCount: number;
           };
         };
         meterRanking?: {
@@ -418,53 +419,19 @@ export default interface RawTitle {
         canRate: {
           isRatable: boolean;
         };
-        castV2: Array<{
-          credits: Array<{
-            creditedRoles: {
-              edges: Array<{
-                node: {
-                  attributes?: Array<{
-                    text: string;
-                  }>;
-                  category: {
-                    categoryId: string;
-                    text: string;
-                  };
-                  characters?: {
-                    edges: Array<{
-                      node: {
-                        name: string;
-                      };
-                    }>;
-                  };
-                };
-              }>;
-            };
-            episodeCredits: {
-              total: number;
-              yearRange?: {
-                year: number;
-                endYear: number;
+        castV2: {
+          edges: Array<{
+            node: {
+              name: {
+                id: string;
+                nameText: { text: string };
+                primaryImage?: { url: string };
               };
-            };
-            name: {
-              id: string;
-              nameText: {
-                text: string;
-              };
-              primaryImage: {
-                height: number;
-                url: string;
-                width: number;
-              };
+              characters?: Array<{ name: string }>;
+              attributes?: Array<{ text: string }>;
             };
           }>;
-          grouping: {
-            groupingId: string;
-            text: string;
-          };
-          totalCredits: number;
-        }>;
+        };
         companies: {
           total: number;
         };
@@ -709,6 +676,7 @@ export default interface RawTitle {
           award: {
             event: {
               id: string;
+              text: string;
             };
             id: string;
             text: string;

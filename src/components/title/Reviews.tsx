@@ -112,11 +112,13 @@ const ReviewStats = ({ reviews }: { reviews: Props['reviews'] }) => {
           <a className='link'>{formatNumber(reviews.numUserReviews)} User reviews</a>
         </Link>
       </p>
-      <p>
-        <Link href={`/title/${titleId}/externalreviews`}>
-          <a className='link'>{formatNumber(reviews.numCriticReviews)} Critic reviews</a>
-        </Link>
-      </p>
+      {reviews.numCriticReviews != null && (
+        <p>
+          <Link href={`/title/${titleId}/externalreviews`}>
+            <a className='link'>{formatNumber(reviews.numCriticReviews)} Critic reviews</a>
+          </Link>
+        </p>
+      )}
       <p>
         <Link href={`/title/${titleId}/criticreviews`}>
           <a className='link'> {reviews.metacriticScore} Metascore</a>

@@ -71,17 +71,17 @@ const cleanTitle = (rawData: RawTitle) => {
         },
       }),
     },
-    cast: misc.castV2.flatMap(group =>
-      group.credits.map(cast => ({
-        name: cast.name.nameText.text,
-        id: cast.name.id,
-        image: cast.name.primaryImage?.url || null,
-        roles: cast.creditedRoles.edges.map(role => ({
-          attributes: role.node.attributes?.map(a => a.text) ?? null,
-          characters: role.node.characters?.edges.map(c => c.node.name) ?? null,
-        })),
-      }))
-    ),
+    cast: misc.castV2.edges.map(({ node }) => ({
+      name: node.name.nameText.text,
+      id: node.name.id,
+      image: node.name.primaryImage?.url || null,
+      roles: [
+        {
+          attributes: node.attributes?.map(a => a.text) ?? null,
+          characters: node.characters?.map(c => c.name) ?? null,
+        },
+      ],
+    })),
     media: {
       ...(main.primaryVideos.edges.length && {
         trailers: main.primaryVideos.edges.map(trailer => ({
@@ -123,7 +123,7 @@ const cleanTitle = (rawData: RawTitle) => {
         awards: {
           name: misc.prestigiousAwardSummary.award.text,
           id: misc.prestigiousAwardSummary.award.id,
-          event: misc.prestigiousAwardSummary.award.event,
+          event: misc.prestigiousAwardSummary.award.event.text,
           nominations: misc.prestigiousAwardSummary.nominations,
           wins: misc.prestigiousAwardSummary.wins,
         },
@@ -217,7 +217,7 @@ const cleanTitle = (rawData: RawTitle) => {
     },
     reviews: {
       metacriticScore: main.metacritic?.metascore.score || null,
-      numCriticReviews: main.criticReviewsTotal.total,
+      numCriticReviews: main.metacritic?.metascore.reviewCount ?? null,
       numUserReviews: misc.reviews.total,
       ratingsDistribution:
         misc.aggregateRatingsBreakdown.histogram?.histogramValues.map(v => ({
@@ -375,7 +375,7 @@ const cleanTitle = (rawData: RawTitle) => {
       genres: title.node.titleGenres?.genres.map(genre => genre.genre.text) ?? null,
     })),
     faqs: {
-      questions: misc.faqs.edges.map(q => ({ question: q.node.question, id: q.node.id })),
+      questions: misc.faqs.edges.map(q => ({ question: q.node.question.plainText, id: q.node.id })),
       total: misc.faqs.total,
     },
   };
