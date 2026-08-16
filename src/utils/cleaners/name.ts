@@ -88,7 +88,7 @@ const cleanName = (rawData: RawName) => {
         },
       }),
     },
-    knownFor: misc.knownForFeatureV2.credits.map(item => ({
+    knownFor: misc.knownForV2.credits.map(item => ({
       id: item.title.id,
       title: item.title.titleText.text,
       ...(item.title.primaryImage && {
@@ -118,7 +118,7 @@ const cleanName = (rawData: RawName) => {
 
       summary: {
         characters:
-          item.creditedRoles.edges[0]?.node.characters.edges?.map(
+          item.creditedRoles.edges[0]?.node.characters?.edges?.map(
             character => character.node.name
           ) ?? null,
         attributes: item.creditedRoles.edges[0]?.node.attributes?.map(a => a.text) ?? null,
@@ -133,7 +133,7 @@ const cleanName = (rawData: RawName) => {
             name: genre.genre.text,
           })) ?? [],
       },
-      released: getCredits(misc.released),
+      released: getCredits(misc.creditCategories),
       // unreleased: getCredits<'unreleased'>(misc.unreleasedPrimaryCredits),
     },
     personalDetails: {
@@ -223,15 +223,12 @@ const cleanName = (rawData: RawName) => {
   return cleanData;
 };
 
-type RawReleased = RawName['props']['pageProps']['mainColumnData']['released'];
-type RawUnreleased = RawName['props']['pageProps']['mainColumnData']['unreleased'];
-const getCredits = <T extends 'released' | 'unreleased' = 'released'>(
-  credits: T extends 'released' ? RawReleased : RawUnreleased
-) =>
-  credits.edges.map(e => ({
-    category: e.node.grouping.text,
-    total: e.node.credits.total,
-    titles: e.node.credits.edges.map(item => ({
+type RawCreditCategories = RawName['props']['pageProps']['mainColumnData']['creditCategories'];
+const getCredits = (creditCategories: RawCreditCategories) =>
+  creditCategories.map(category => ({
+    category: category.category.text,
+    total: category.credits.total,
+    titles: category.credits.edges.map(item => ({
       id: item.node.title.id,
       title: item.node.title.titleText.text,
       ...(item.node.title.primaryImage && {
@@ -257,21 +254,20 @@ const getCredits = <T extends 'released' | 'unreleased' = 'released'>(
         avg: item.node.title.ratingsSummary.aggregateRating ?? null,
         numVotes: item.node.title.ratingsSummary.voteCount,
       },
-      test: JSON.stringify(item.node.title),
       genres: item.node.title.titleGenres?.genres.map(genre => genre.genre.text) ?? [],
       productionStatus: item.node.title.productionStatus.currentProductionStage.text,
-
       summary: {
         numEpisodes: item.node.episodeCredits.total,
         years: {
           start: item.node.episodeCredits.yearRange?.year ?? null,
           end: item.node.episodeCredits.yearRange?.endYear ?? null,
         },
-        roles: item.node.creditedRoles.edges.map(e => ({
-          
-          characters: e.node.characters?.edges?.map(char => char.node.name) ?? null,
-          attributes: e.node.attributes?.map(job => job.text) ?? null,
-        }))
+        roles: [
+          {
+            characters: item.node.characters?.map(char => char.name) ?? null,
+            attributes: item.node.attributes?.map(job => job.text) ?? null,
+          },
+        ],
       },
     })),
   }));

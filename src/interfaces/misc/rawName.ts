@@ -464,6 +464,77 @@ export default interface Name {
             };
           }>;
         };
+        knownForV2: {
+          credits: Array<{
+            creditedRoles: {
+              edges: Array<{
+                node: {
+                  category: { text: string };
+                  characters?: {
+                    edges: Array<{ node: { name: string } }>;
+                  };
+                  attributes?: Array<{ text: string }>;
+                };
+              }>;
+            };
+            title: {
+              id: string;
+              titleText: { text: string };
+              primaryImage?: {
+                id: string;
+                url: string;
+                caption: { plainText: string };
+              };
+              titleType: {
+                id: 'movie' | 'tvSeries' | 'tvEpisode' | 'videoGame';
+                text: string;
+              };
+              certificate?: { rating: string };
+              releaseYear?: { year: number; endYear?: number };
+              runtime?: { seconds: number };
+              ratingsSummary: { aggregateRating?: number; voteCount: number };
+              titleGenres?: {
+                genres: Array<{ genre: { text: string } }>;
+              };
+            };
+          }>;
+        };
+        creditCategories: Array<{
+          category: { text: string };
+          credits: {
+            total: number;
+            edges: Array<{
+              node: {
+                title: {
+                  id: string;
+                  titleText: { text: string };
+                  primaryImage?: {
+                    id: string;
+                    url: string;
+                    caption: { plainText: string };
+                  };
+                  titleType: { id: string; text: string };
+                  certificate?: { rating: string };
+                  releaseYear?: { year: number; endYear?: number };
+                  runtime?: { seconds: number };
+                  ratingsSummary: { aggregateRating?: number; voteCount: number };
+                  titleGenres?: {
+                    genres: Array<{ genre: { text: string } }>;
+                  };
+                  productionStatus: {
+                    currentProductionStage: { text: string };
+                  };
+                };
+                episodeCredits: {
+                  total: number;
+                  yearRange?: { year: number; endYear?: number };
+                };
+                characters?: Array<{ name: string }>;
+                attributes?: Array<{ text: string }>;
+              };
+            }>;
+          };
+        }>;
         nameFilmBiography: {
           total: number;
         };
