@@ -71,14 +71,14 @@ const cleanTitle = (rawData: RawTitle) => {
         },
       }),
     },
-    cast: misc.castV2.edges.map(({ node }) => ({
-      name: node.name.nameText.text,
-      id: node.name.id,
-      image: node.name.primaryImage?.url || null,
+    cast: misc.castV2.edges.map(({ node: cast }) => ({
+      name: cast.name.nameText.text,
+      id: cast.name.id,
+      image: cast.name.primaryImage?.url || null,
       roles: [
         {
-          attributes: node.attributes?.map(a => a.text) ?? null,
-          characters: node.characters?.map(c => c.name) ?? null,
+          attributes: cast.attributes?.map(a => a.text) ?? null,
+          characters: cast.characters?.map(c => c.name) ?? null,
         },
       ],
     })),
@@ -155,7 +155,7 @@ const cleanTitle = (rawData: RawTitle) => {
           totalEpisodes: misc.episodes.episodes.total,
           seasons: misc.episodes.seasons.map(season => season.number),
           years: misc.episodes.years.map(year => year.year),
-          topRatedEpisode: misc.episodes.topRated.edges[0].node.ratingsSummary.aggregateRating,
+          topRatedEpisode: null, // TODO: restaurar con el campo real de episodio top al validar una serie de TV
         },
       }),
     },
