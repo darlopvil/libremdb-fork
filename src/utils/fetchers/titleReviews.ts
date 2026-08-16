@@ -1,59 +1,61 @@
-import { AxiosError } from 'axios';
-import * as cheerio from 'cheerio';
-import { RawReviews, RawReview } from 'src/interfaces/misc/rawReviews';
-import axiosInstance, { isSaneError } from 'src/utils/axiosInstance';
+import fetchImdbGraphql from 'src/utils/imdbGraphql';
+import { isSaneError } from 'src/utils/axiosInstance';
 import { AppError } from 'src/utils/helpers';
+import titleReviewsQuery from 'src/utils/fetchers/titleReviewsQuery';
+
+const TITLE_ID_REGEX = /^tt\d+$/;
+
+type RawReviewNode = {
+  id: string;
+  summary?: { originalText: string };
+  authorRating?: number;
+  author: { userId: string; username: { text: string } };
+  submissionDate: string;
+  spoiler: boolean;
+  helpfulness: { upVotes: number; downVotes: number };
+  text?: { originalText?: { plaidHtml: string } };
+};
 
 const reviews = async (titleId: string, queryStr = '') => {
+  if (!TITLE_ID_REGEX.test(titleId)) throw new AppError('not found', 404);
+
   try {
-    // https://www.imdb.com/title/tt0364343/reviews?spoiler=hide&sort=curated&dir=desc&ratingFilter=0
-    const res = await axiosInstance(`/title/${titleId}/reviews?${queryStr}`);
-    const $ = cheerio.load(res.data);
+    const data = await fetchImdbGraphql(titleReviewsQuery(titleId, queryStr));
+    const title = data?.title;
+    if (!title) throw new AppError('not found', 404);
 
-    const rawData = $("script#__NEXT_DATA__").text();
-    const rawReviews: RawReviews = JSON.parse(rawData);
-
-    const reviewsData = rawReviews.props.pageProps.contentData.entityMetadata;
     const meta = {
-      title: reviewsData.titleText.text,
-      year: reviewsData.releaseYear.year,
-      image: reviewsData.primaryImage.url,
-      numReviews: reviewsData.ratingsSummary.voteCount,
+      title: title.titleText.text,
+      year: title.releaseYear?.year ?? null,
+      image: title.primaryImage?.url ?? null,
+      numReviews: title.ratingsSummary.voteCount,
       titleId,
     };
 
-    const list = cleanReviewsList(rawReviews.props.pageProps.contentData.reviews);
+    const edges: Array<{ node: RawReviewNode }> = title.reviews.edges;
+    const list = edges.map(({ node }) => ({
+      summary: node.summary?.originalText ?? null,
+      reviewId: node.id,
+      rating: node.authorRating ?? null,
+      by: {
+        name: node.author.username.text,
+        link: `/user/${node.author.userId}`,
+      },
+      date: node.submissionDate,
+      isSpoiler: node.spoiler,
+      reviewHtml: node.text?.originalText?.plaidHtml ?? '',
+      responses: {
+        upVotes: node.helpfulness.upVotes,
+        downVotes: node.helpfulness.downVotes,
+      },
+    }));
+
     return { meta, list };
   } catch (err) {
-    if (isSaneError(err) && err.response?.status === 404)
-      throw new AppError('not found', 404, err);
-
     if (err instanceof AppError) throw err;
-
+    if (isSaneError(err) && err.response?.status === 404) throw new AppError('not found', 404, err);
     throw new AppError('something went wrong', 500, err);
   }
 };
 
 export default reviews;
-
-const cleanReviewsList = (reviews: RawReview[]) => {
-  return reviews
-    .map(review => {
-      return {
-        summary: review.review.reviewSummary,
-        reviewId: review.review.reviewId,
-        rating: review.review.authorRating ?? null,
-        by: {
-          name: review.review.author.username.text,
-          link: `/user/${review.review.author.userId}`,
-        },
-        date: review.review.submissionDate,
-        isSpoiler: review.review.spoiler,
-        reviewHtml: review.review.reviewText,
-        responses: {
-          upVotes: review.review.helpfulnessVotes.upVotes,
-          downVotes: review.review.helpfulnessVotes.downVotes,
-        },
-      };
-    })
-};
