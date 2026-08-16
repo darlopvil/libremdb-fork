@@ -47,21 +47,21 @@ const cleanList = (rawList: RawList) => {
   if (d.listType.id === 'TITLES') {
     const data = d.titleListItemSearch.edges.map(title => ({
       userDescription: title.node.description?.originalText?.plaidHtml ?? null,
-      titleId: title.listItem.id,
-      image: title.listItem.primaryImage?.url ?? null,
-      name: title.listItem.titleText.text,
-      url: `/title/${title.listItem.id}`,
-      year: title.listItem.releaseYear?.year.toString() ?? null,
-      certificate: title.listItem.certificate?.rating ?? null,
-      runtime: title.listItem.runtime?.seconds ?? null,
-      genres: title.listItem.titleGenres?.genres.map(genre => genre.genre.text) ?? [],
-      plot: title.listItem.plot?.plotText?.plainText ?? null,
+      titleId: title.title.id,
+      image: title.title.primaryImage?.url ?? null,
+      name: title.title.titleText.text,
+      url: `/title/${title.title.id}`,
+      year: title.title.releaseYear?.year.toString() ?? null,
+      certificate: title.title.certificate?.rating ?? null,
+      runtime: title.title.runtime?.seconds ?? null,
+      genres: title.title.titleGenres?.genres.map(genre => genre.genre.text) ?? [],
+      plot: title.title.plot?.plotText?.plainText ?? null,
       rating: {
-        score: title.listItem.ratingsSummary.aggregateRating,
-        voteCount: title.listItem.ratingsSummary.voteCount,
+        score: title.title.ratingsSummary.aggregateRating,
+        voteCount: title.title.ratingsSummary.voteCount,
       },
-      metascore: title.listItem.metacritic?.metascore.score ?? null,
-      otherInfo: title.listItem.principalCreditsV2.map(credit => [
+      metascore: title.title.metacritic?.metascore.score ?? null,
+      otherInfo: title.title.principalCreditsV2.map(credit => [
         credit.grouping.text,
         ...credit.credits.map(credit => credit.name.nameText.text),
       ]),
@@ -75,18 +75,17 @@ const cleanList = (rawList: RawList) => {
   // 3. actors list
   else if (d.listType.id === 'PEOPLE') {
     const data = d.nameListItemSearch.edges.map(name => ({
-      nameId: name.listItem.id,
+     nameId: name.name.id,
       userDescription: name.node.description?.originalText?.plaidHtml ?? null,
-      image: name.listItem.primaryImage?.url || null,
-      name: name.listItem.nameText.text,
-      url: `/name/${name.listItem.id}`,
-      jobs: name.listItem.professions.map(profession => profession.profession.text),
-      knownFor: name.listItem.knownForV2.credits.map(credit => {
+      image: name.name.primaryImage?.url || null,
+      name: name.name.nameText.text,
+      url: `/name/${name.name.id}`,
+      jobs: name.name.professions.map(profession => profession.profession.text),
+      knownFor: name.name.knownForV2.credits.map(credit => {
         return { title: credit.title.titleText.text, url: `/title/${credit.title.id}` };
       }),
       about:
-        // ideally would've first sliced then cleaned up tags, but in v8's perf we trust.
-        htmlToText(name.listItem.bio.displayableArticle.body.plaidHtml).slice(0, 400) + '...',
+        htmlToText(name.name.bio.displayableArticle.body.plaidHtml).slice(0, 400) + '...',
     }));
 
     pagination.cur = data.length;

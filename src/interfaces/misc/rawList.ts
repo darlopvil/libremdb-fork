@@ -60,8 +60,8 @@ export default interface RawList<T extends DataKind = DataKind> {
           visibility: {
             id: 'PUBLIC';
           };
-          titleListItemSearch: T extends 'TITLES' ? ItemShell<ListTitleItem> : never;
-          nameListItemSearch: T extends 'PEOPLE' ? ItemShell<ListNameItem> : never;
+          titleListItemSearch: T extends 'TITLES' ? ItemShell<ListTitleItem, 'title'> : never;
+          nameListItemSearch: T extends 'PEOPLE' ? ItemShell<ListNameItem, 'name'> : never;
           imageItems: T extends 'IMAGES' ? ItemShell<ListImageItem, 'inside'> : never;
         };
       };
@@ -73,29 +73,23 @@ export default interface RawList<T extends DataKind = DataKind> {
   };
 }
 
-// everything is same across all three datakinds save for the location of `listItem`
-// which is inside the node in case of `IMAGES`. hence this generic mess.
-interface ItemShell<T, Pos extends 'outside' | 'inside' = 'outside'> {
+// la posición y el nombre del campo del item cambian según el tipo de lista:
+// `title` en listas de títulos, `name` en las de personas y `node.listItem`
+// en las de imágenes. de ahí este genérico.
+interface ItemShell<T, Key extends 'title' | 'name' | 'inside' = 'title'> {
   total: number;
-  pageInfo: {
-    hasNextPage: boolean;
-    hasPreviousPage: boolean;
-    endCursor: string;
-  };
-  edges: Array<{
-    node: {
-      itemId: string;
-      absolutePosition: number;
-      createdDate: string;
-      description?: {
-        originalText?: {
-          plaidHtml: string;
+  edges: Array<
+    {
+      node: {
+        description?: {
+          originalText?: {
+            plaidHtml: string;
+          };
         };
+        listItem: Key extends 'inside' ? T : never;
       };
-      listItem: Pos extends 'inside' ? T : never;
-    };
-    listItem: Pos extends 'outside' ? T : never;
-  }>;
+    } & (Key extends 'title' ? { title: T } : Key extends 'name' ? { name: T } : {})
+  >;
 }
 
 interface ListTitleItem {

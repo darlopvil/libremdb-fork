@@ -67,14 +67,22 @@ const Filters = ({ className, titleId }: Props) => {
           onChange={(e: ChangeEvent<HTMLInputElement>) =>
             setFormState({ ...formState, spoilers: e.target.checked })
           }
-          defaultChecked={formState.spoilers}
+          checked={formState.spoilers}
         />
       </p>
       <div className={styles.buttons}>
         <button
           type='button'
           className={styles.button}
-          onClick={() => router.push(`/title/${titleId}/reviews`)}
+          onClick={() => {
+            setFormState({
+              ratings: ratings.types[0].val,
+              sortBy: sortBy.types[0].val,
+              direction: direction.types[0].val,
+              spoilers: false,
+            });
+            router.push(`/title/${titleId}/reviews`);
+          }}
         >
           Clear
         </button>
