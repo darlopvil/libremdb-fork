@@ -48,22 +48,34 @@ const Filters = ({ className, titleId }: Props) => {
     >
       <fieldset className={styles.fieldset}>
         <legend className={`heading ${styles.fieldset__heading}`}>Filter by Rating</legend>
-        <RadioBtns data={ratings} className={styles.radio} handleChange={(e: ChangeEvent<HTMLInputElement>) => setFormState({...formState, ratings: e.target.value})} defaultValue={formState.ratings} />
+        <RadioBtns data={ratings} className={styles.radio} handleChange={(e: ChangeEvent<HTMLInputElement>) => setFormState({ ...formState, ratings: e.target.value })} defaultValue={formState.ratings} />
       </fieldset>
       <fieldset className={styles.fieldset}>
         <legend className={`heading ${styles.fieldset__heading}`}>Sort by</legend>
-        <RadioBtns data={sortBy} className={styles.radio} handleChange={(e: ChangeEvent<HTMLInputElement>) => setFormState({...formState, sortBy: e.target.value})} defaultValue={formState.sortBy} />
+        <RadioBtns data={sortBy} className={styles.radio} handleChange={(e: ChangeEvent<HTMLInputElement>) => setFormState({ ...formState, sortBy: e.target.value })} defaultValue={formState.sortBy} />
       </fieldset>
       <fieldset className={styles.fieldset}>
         <legend className={`heading ${styles.fieldset__heading}`}>Direction</legend>
-        <RadioBtns data={direction} className={styles.radio} handleChange={(e: ChangeEvent<HTMLInputElement>) => setFormState({...formState, direction: e.target.value})} defaultValue={formState.direction} />
+        <RadioBtns data={direction} className={styles.radio} handleChange={(e: ChangeEvent<HTMLInputElement>) => setFormState({ ...formState, direction: e.target.value })} defaultValue={formState.direction} />
       </fieldset>
       <p className={styles.exact}>
         <label htmlFor='spoiler'>Hide Spoilers</label>
-        <input type='checkbox' name='spoiler' id='spoiler' value='hide' onChange={(e: ChangeEvent<HTMLInputElement>) => setFormState({...formState, spoilers: e.target.value == 'hide'})} defaultChecked={formState.spoilers} />
+        <input
+          type='checkbox'
+          name='spoiler'
+          id='spoiler'
+          onChange={(e: ChangeEvent<HTMLInputElement>) =>
+            setFormState({ ...formState, spoilers: e.target.checked })
+          }
+          defaultChecked={formState.spoilers}
+        />
       </p>
       <div className={styles.buttons}>
-        <button type='reset' className={styles.button}>
+        <button
+          type='button'
+          className={styles.button}
+          onClick={() => router.push(`/title/${titleId}/reviews`)}
+        >
           Clear
         </button>
         <button type='submit' className={styles.button}>

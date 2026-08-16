@@ -11,8 +11,14 @@ const SORT_BY_MAP: Record<string, string> = {
 const titleReviewsQuery = (titleId: string, queryStr = '') => {
   const params = new URLSearchParams(queryStr);
 
-  const sortBy = SORT_BY_MAP[params.get('sort') ?? ''] ?? 'HELPFULNESS_SCORE';
-  const order = params.get('dir') === 'asc' ? 'ASC' : 'DESC';
+  // la UI manda el orden combinado en un solo parámetro ("submission_date desc"),
+  // pero se admite también el formato separado (sort=...&dir=...)
+  const rawSort = params.get('sort') ?? '';
+  const [sortKey, sortDir] = rawSort.trim().split(/\s+/);
+
+  const sortBy = SORT_BY_MAP[sortKey] ?? 'HELPFULNESS_SCORE';
+  const dir = sortDir ?? params.get('dir') ?? 'desc';
+  const order = dir.toLowerCase() === 'asc' ? 'ASC' : 'DESC';
 
   // filtros opcionales: solo se incluyen si el usuario los ha elegido
   const filters: string[] = [];
