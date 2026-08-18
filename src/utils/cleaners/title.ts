@@ -285,7 +285,37 @@ const cleanTitle = (rawData: RawTitle) => {
           text: lang.text,
         })),
       }),
-      alsoKnownAs: misc.akas.edges[0]?.node.text || null,
+            // país destacado (por defecto España); se muestra primero y el resto se pliega
+      ...(() => {
+        const featured = (process.env.NEXT_PUBLIC_COUNTRY || 'ES').toUpperCase();
+
+        const akas = misc.akas.edges.map(a => ({
+          text: a.node.text,
+          country: a.node.country?.text ?? null,
+          countryId: a.node.country?.id ?? null,
+        }));
+
+        const releaseDates = misc.releaseDates.edges.map(r => ({
+          date: formatDate(r.node.year, r.node.month - 1, r.node.day ?? 1),
+          country: r.node.country?.text ?? null,
+          countryId: r.node.country?.id ?? null,
+          attributes: r.node.attributes?.map(attr => attr.text) ?? [],
+        }));
+
+        return {
+          alsoKnownAs: akas[0]?.text || null,
+          akas: {
+            total: misc.akas.total,
+            featured: akas.filter(a => a.countryId === featured),
+            all: akas,
+          },
+          releaseDates: {
+            total: misc.releaseDates.total,
+            featured: releaseDates.filter(r => r.countryId === featured),
+            all: releaseDates,
+          },
+        };
+      })(),
       ...(misc.filmingLocations.edges.length && {
         filmingLocations: {
           total: misc.filmingLocations.total,
@@ -375,7 +405,12 @@ const cleanTitle = (rawData: RawTitle) => {
       genres: title.node.titleGenres?.genres.map(genre => genre.genre.text) ?? null,
     })),
     faqs: {
-      questions: misc.faqs.edges.map(q => ({ question: q.node.question.plainText, id: q.node.id })),
+        questions: misc.faqs.edges.map(q => ({
+        question: q.node.question.plainText,
+        answer: q.node.answer?.plaidHtml ?? null,
+        isSpoiler: q.node.isSpoiler ?? false,
+        id: q.node.id,
+      })),
       total: misc.faqs.total,
     },
   };

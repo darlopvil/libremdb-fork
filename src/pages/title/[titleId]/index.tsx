@@ -25,6 +25,7 @@ const TitleInfo = ({ data, error, originalPath }: Props) => {
     boxOffice: data.boxOffice,
     technicalSpecs: data.technicalSpecs,
     accolades: data.accolades,
+    faqs: data.faqs,
   };
 
   return (

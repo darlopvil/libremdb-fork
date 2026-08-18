@@ -399,10 +399,24 @@ export default interface RawTitle {
             }>;
           };
         };
-        akas: {
+                akas: {
+          total: number;
           edges: Array<{
             node: {
               text: string;
+              country?: { id: string; text: string };
+            };
+          }>;
+        };
+        releaseDates: {
+          total: number;
+          edges: Array<{
+            node: {
+              day?: number;
+              month: number;
+              year: number;
+              country?: { id: string; text: string };
+              attributes?: Array<{ id: string; text: string }>;
             };
           }>;
         };
@@ -529,16 +543,16 @@ export default interface RawTitle {
             }>;
           };
         };
-        faqs: {
+                faqs: {
+          total: number;
           edges: Array<{
             node: {
               id: string;
-              question: {
-                plainText: string;
-              };
+              question: { plainText: string };
+              answer?: { plaidHtml: string };
+              isSpoiler?: boolean;
             };
           }>;
-          total: number;
         };
         featuredReviews: {
           edges: Array<{

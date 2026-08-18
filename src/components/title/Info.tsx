@@ -12,8 +12,7 @@ type Props = {
 const Info = ({ info, className }: Props) => {
   const router = useRouter();
   const { titleId } = router.query;
-  const { boxOffice, details, meta, keywords, technicalSpecs, accolades } =
-    info;
+  const { boxOffice, details, meta, keywords, technicalSpecs, accolades, faqs } = info;
 
   return (
     <div className={`${className} ${styles.info}`}>
@@ -139,18 +138,64 @@ const Info = ({ info, className }: Props) => {
           </ul>
         </section>
       )}
+            {!!faqs?.total && (
+        <section className={styles.faqs}>
+          <h2 className='heading heading__secondary'>FAQs</h2>
+          <div className={styles.faqs__container}>
+            {faqs.questions.map(faq => (
+              <details key={faq.id}>
+                <summary className='link'>
+                  {faq.isSpoiler ? '[Spoiler] ' : ''}
+                  {faq.question}
+                </summary>
+                {faq.answer ? (
+                  <div dangerouslySetInnerHTML={{ __html: faq.answer }} />
+                ) : (
+                  <p>No answer available.</p>
+                )}
+              </details>
+            ))}
+            {faqs.total > faqs.questions.length && (
+              <p>
+                Showing {faqs.questions.length} of {faqs.total} questions
+              </p>
+            )}
+          </div>
+        </section>
+      )}
+         
       {!!Object.keys(details).length && (
         <section className={styles.details}>
           <h2 className="heading heading__secondary">Details</h2>
           <div className={styles.details__container}>
-            {details.releaseDate && (
+                        {!!details.releaseDates?.featured.length && (
               <p>
                 <span>Release date: </span>
-                <time dateTime={details.releaseDate.date}>
-                  {details.releaseDate.date}
-                </time>
-                <span> ({details.releaseDate.country.text})</span>
+                {details.releaseDates.featured.map((rel, i) => (
+                  <span key={i}>
+                    {!!i && ', '}
+                    <time>{rel.date}</time>
+                    <span> ({rel.country})</span>
+                    {!!rel.attributes.length && <span> — {rel.attributes.join(', ')}</span>}
+                  </span>
+                ))}
               </p>
+            )}
+            {!!details.releaseDates?.total && (
+              <details>
+                <summary className='link'>
+                  All release dates ({details.releaseDates.total})
+                </summary>
+                <ul>
+                  {details.releaseDates.all.map((rel, i) => (
+                    <li key={i}>
+                      <span>{rel.country}: </span>
+                      <time>{rel.date}</time>
+                      {!!rel.attributes.length && <span> ({rel.attributes.join(', ')})</span>}
+                    </li>
+                  ))}
+                </ul>
+              </details>
             )}
 
             {details.countriesOfOrigin && (
@@ -194,11 +239,24 @@ const Info = ({ info, className }: Props) => {
                 ))}
               </p>
             )}
-            {details.alsoKnownAs && (
+                        {!!details.akas?.featured.length && (
               <p>
                 <span>Also known as: </span>
-                <span>{details.alsoKnownAs}</span>
+                <span>{details.akas.featured.map(a => a.text).join(', ')}</span>
               </p>
+            )}
+            {!!details.akas?.total && (
+              <details>
+                <summary className='link'>All titles ({details.akas.total})</summary>
+                <ul>
+                  {details.akas.all.map((aka, i) => (
+                    <li key={i}>
+                      <span>{aka.country ?? 'Original'}: </span>
+                      <span>{aka.text}</span>
+                    </li>
+                  ))}
+                </ul>
+              </details>
             )}
             {details.filmingLocations?.total && (
               <p>

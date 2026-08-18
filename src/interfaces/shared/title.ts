@@ -15,7 +15,7 @@ export type DidYouKnow = Title['didYouKnow'];
 
 export type Info = Pick<
   Title,
-  'meta' | 'accolades' | 'keywords' | 'details' | 'boxOffice' | 'technicalSpecs'
+  'meta' | 'keywords' | 'details' | 'boxOffice' | 'technicalSpecs' | 'accolades' | 'faqs'
 >;
 
 export type Reviews = Title['reviews'];

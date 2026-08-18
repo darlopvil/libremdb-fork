@@ -73,7 +73,8 @@ query {
     countriesDetails: countriesOfOrigin { countries { id text } }
     detailsExternalLinks: externalLinks(first: 50) { total edges { node { label url externalLinkRegion { text } } } }
     spokenLanguages { spokenLanguages { id text } }
-    akas(first: 1) { edges { node { text } } }
+        akas(first: 250) { total edges { node { text country { id text } } } }
+    releaseDates(first: 250) { total edges { node { day month year country { id text } attributes { id text } } } }
     filmingLocations(first: 20) { total edges { node { text } } }
     production: companyCredits(first: 20, filter: { categories: ["production"] }) { edges { node { company { id companyText { text } } } } }
     companies: companyCredits(first: 0) { total }
@@ -102,7 +103,7 @@ query {
       } }
     }
 
-    faqs(first: 10) { total edges { node { question { plainText } id } } }
+    faqs(first: 50) { total edges { node { id question { plainText } answer { plaidHtml } isSpoiler } } }
   }
 }
 `;
