@@ -1,5 +1,5 @@
 import Image from 'next/future/image';
-import { modifyIMDbImg } from 'src/utils/helpers';
+import { modifyIMDbImg, getProxiedIMDbImgUrl } from 'src/utils/helpers';
 import { Card } from 'src/components/card';
 import type { DataName } from 'src/interfaces/shared/list';
 import styles from 'src/styles/modules/components/list/names.module.scss';
@@ -25,7 +25,7 @@ const Name = ({ about, image, jobs, knownFor, name, url }: Props['names'][number
     <Card hoverable className={styles.name}>
       <div className={styles.imgContainer}>
         {image ? (
-          <Image src={modifyIMDbImg(image, 400)} alt='' fill className={styles.img} sizes='200px' />
+          <Image unoptimized src={getProxiedIMDbImgUrl(modifyIMDbImg(image, 400))} alt='' fill className={styles.img} sizes='200px' />
         ) : (
           <svg className={styles.imgNA}>
             <use href='/svg/sprite.svg#icon-image-slash' />

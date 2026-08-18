@@ -2,7 +2,7 @@ import { ComponentPropsWithoutRef, ElementType, ReactNode } from 'react';
 import Link from 'next/link';
 import Image from 'next/future/image';
 import Card from './Card';
-import { modifyIMDbImg } from 'src/utils/helpers';
+import { modifyIMDbImg, getProxiedIMDbImgUrl } from 'src/utils/helpers';
 import styles from 'src/styles/modules/components/card/card-result.module.scss';
 
 type Props<T extends ElementType> = {
@@ -26,7 +26,7 @@ const CardResult = <T extends 'li' | 'section' | 'div' = 'li'>({
   let ImageComponent = null;
   if (showImage)
     ImageComponent = image ? (
-      <Image src={modifyIMDbImg(image, 400)} alt='' fill className={styles.img} sizes='200px' />
+      <Image unoptimized src={getProxiedIMDbImgUrl(modifyIMDbImg(image, 400))} alt='' fill className={styles.img} sizes='200px' />
     ) : (
       <svg className={styles.imgNA}>
         <use href='/svg/sprite.svg#icon-image-slash' />

@@ -3,7 +3,7 @@ import styles from 'src/styles/modules/components/card/card-title.module.scss';
 import { ComponentPropsWithoutRef, ReactNode } from 'react';
 import Link from 'next/link';
 import Image from 'next/future/image';
-import { formatNumber, modifyIMDbImg } from 'src/utils/helpers';
+import { formatNumber, modifyIMDbImg, getProxiedIMDbImgUrl } from 'src/utils/helpers';
 
 type Props = {
   link: string;
@@ -25,7 +25,7 @@ const CardTitle = ({ link, name, year, image, ratings, titleType, children, ...r
           <div className={styles.imgContainer}>
             {image ? (
               <Image
-                src={modifyIMDbImg(image, 400)}
+                unoptimized src={getProxiedIMDbImgUrl(modifyIMDbImg(image, 400))}
                 alt=''
                 fill
                 className={styles.img}

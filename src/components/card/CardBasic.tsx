@@ -21,9 +21,9 @@ const CardBasic = ({ image, children, className, title, originalTitle, ...rest }
     <Card as='section' className={`${styles.container} ${className}`} {...rest}>
       <div className={styles.imageContainer} style={style}>
         {image ? (
-          <Image
+          <Image unoptimized
             className={styles.image}
-            src={modifyIMDbImg(image)}
+            src={getProxiedIMDbImgUrl(modifyIMDbImg(image))}
             alt=''
             priority
             fill

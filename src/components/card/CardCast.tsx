@@ -3,7 +3,7 @@ import styles from 'src/styles/modules/components/card/card-cast.module.scss';
 import { Fragment, type ComponentPropsWithoutRef, type ReactNode } from 'react';
 import Link from 'next/link';
 import Image from 'next/future/image';
-import { modifyIMDbImg } from 'src/utils/helpers';
+import { modifyIMDbImg, getProxiedIMDbImgUrl } from 'src/utils/helpers';
 import type { Cast } from 'src/interfaces/shared/title';
 
 type Props = {
@@ -22,7 +22,7 @@ const CardCast = ({ link, name, image, children, roles, ...rest }: Props) => {
           <div className={styles.imgContainer}>
             {image ? (
               <Image
-                src={modifyIMDbImg(image, 400)}
+                unoptimized src={getProxiedIMDbImgUrl(modifyIMDbImg(image, 400))}
                 alt=''
                 fill
                 className={styles.img}

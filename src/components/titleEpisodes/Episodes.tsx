@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/future/image';
-import { modifyIMDbImg, formatTime, formatNumber } from 'src/utils/helpers';
+import { modifyIMDbImg, formatTime, formatNumber, getProxiedIMDbImgUrl } from 'src/utils/helpers';
 import TitleEpisodes from 'src/interfaces/shared/titleEpisodes';
 import styles from 'src/styles/modules/components/titleEpisodes/episodes.module.scss';
 
@@ -24,7 +24,7 @@ const Episodes = ({ list, className }: Props) => {
                     <div className={styles.imgContainer}>
                         {episode.image && (
                             <Image
-                                src={modifyIMDbImg(episode.image, 400)}
+                                unoptimized src={getProxiedIMDbImgUrl(modifyIMDbImg(episode.image, 400))}
                                 alt=''
                                 fill
                                 sizes='200px'

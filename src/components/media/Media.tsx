@@ -54,9 +54,9 @@ const Media = ({ className, media }: Props) => {
               media.videos.videos.map(video => (
                 <Link href={`/video/${video.id}`} key={video.id}>
                   <a className={styles.video}>
-                    <Image
+                    <Image unoptimized
                       className={styles.video__img}
-                      src={modifyIMDbImg(video.thumbnail)}
+                      src={getProxiedIMDbImgUrl(modifyIMDbImg(video.thumbnail))}
                       alt=''
                       fill
                       sizes='400px'
@@ -76,9 +76,9 @@ const Media = ({ className, media }: Props) => {
           <div className={styles.images__container}>
             {media.images.images.map(image => (
               <figure key={image.id} className={styles.image}>
-                <Image
+                <Image unoptimized
                   className={styles.image__img}
-                  src={modifyIMDbImg(image.url)}
+                  src={getProxiedIMDbImgUrl(modifyIMDbImg(image.url))}
                   alt=''
                   fill
                   sizes='400px'

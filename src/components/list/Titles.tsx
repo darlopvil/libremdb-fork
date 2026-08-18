@@ -26,7 +26,7 @@ const Title = (props: Props['titles'][number]) => {
     <Card hoverable className={styles.title}>
       <div className={styles.imgContainer}>
         {props.image ? (
-          <Image src={modifyIMDbImg(props.image, 400)} alt='' fill className={styles.img} />
+          <Image unoptimized src={getProxiedIMDbImgUrl(modifyIMDbImg(props.image, 400))} alt='' fill className={styles.img} />
         ) : (
           <svg className={styles.imgNA}>
             <use href='/svg/sprite.svg#icon-image-slash' />
