@@ -5,9 +5,14 @@ import axios from 'axios';
 const graphqlInstance = axios.create({
   baseURL: 'https://api.graphql.imdb.com/',
   timeout: 50000,
-  headers: {
+    headers: {
     'Content-Type': 'application/json',
     'x-imdb-client-name': 'imdb-web-next-localized',
+    // localización de los datos que devuelve IMDb: hacen falta las dos
+    // cabeceras. Solo el idioma da la variante hispanoamericana; solo el
+    // país no cambia el idioma de las sinopsis.
+    ...(process.env.IMDB_LANGUAGE && { 'x-imdb-user-language': process.env.IMDB_LANGUAGE }),
+    ...(process.env.IMDB_COUNTRY && { 'x-imdb-user-country': process.env.IMDB_COUNTRY }),
     ...(process.env.AXIOS_LANGUAGE && { 'Accept-Language': process.env.AXIOS_LANGUAGE }),
   },
 });
