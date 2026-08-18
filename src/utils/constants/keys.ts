@@ -5,3 +5,5 @@ export const nameKey = (nameId: string) => `name:${nameId}`;
 export const listKey = (listId: string, pageNum = '1') => `list:${listId}?page=${pageNum}`;
 export const findKey = (query: string) => `find:${query}`;
 export const mediaKey = (url: string) => `media:${url}`;
+export const titleEpisodesKey = (titleId: string, queryStr: string) =>
+  `title/episodes:${titleId}?${queryStr}`;

@@ -1,0 +1,51 @@
+@use '../../../abstracts' as helper;
+
+.episodes {
+  display: grid;
+  gap: var(--spacer-5);
+}
+
+.episode {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: var(--spacer-4);
+  padding-block-end: var(--spacer-5);
+  border-block-end: 1px solid var(--clr-fill-muted);
+
+  &:last-child { border-block-end: none; }
+
+  @include helper.bp('bp-700') {
+    grid-template-columns: none;
+  }
+}
+
+.imgContainer {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  background-color: var(--clr-bg-accent);
+  border-radius: var(--border-radius-1);
+  overflow: hidden;
+}
+
+.img { object-fit: cover; }
+
+.info { display: grid; gap: var(--spacer-2); align-content: start; }
+
+.heading {
+  font-size: var(--fs-5);
+  a { color: inherit; }
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacer-3);
+  color: var(--clr-text-muted);
+  font-size: var(--fs-8);
+}
+
+.rating { color: var(--clr-accent); font-weight: 700; }
+
+.plot { color: var(--clr-text-muted); }
+
+.noResults { padding: var(--spacer-5); text-align: center; }
