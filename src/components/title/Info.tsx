@@ -75,14 +75,21 @@ const Info = ({ info, className }: Props) => {
               <span>Total Years: </span>
               <span>{meta.infoSeries.years.length}</span>
             </p>
-            <p>
+                        <p>
               <span>Total Episodes: </span>
               <span>{meta.infoSeries.totalEpisodes}</span>
             </p>
+            {meta.infoSeries.topRatedEpisode && (
+              <p>
+                <span>Top rated episode: </span>
+                <span>★ {meta.infoSeries.topRatedEpisode}</span>
+              </p>
+            )}
             <p>
               <Link href={`/title/${titleId}/episodes`}>
                 <a className="link">See all Episodes</a>
               </Link>
+           
             </p>
           </div>
         </section>
