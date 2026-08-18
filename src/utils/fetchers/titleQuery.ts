@@ -44,7 +44,14 @@ query {
     nominationsExcludeWins: awardNominations(first: 0, filter: { wins: EXCLUDE_WINS }) { total }
     prestigiousAwardSummary { award { id text event { text } } nominations wins }
 
-    episodes { episodes { total } seasons { number } years { year } }
+      episodes {
+      episodes(first: 0) { total }
+      seasons { number }
+      years { year }
+      topRated: episodes(first: 1, sort: { by: RATING, order: DESC }) {
+        edges { node { ratingsSummary { aggregateRating } } }
+      }
+    }
 
     trivia: trivia(first: 1) { edges { node { text { plaidHtml } } } }
     triviaTotal: trivia(first: 0) { total }

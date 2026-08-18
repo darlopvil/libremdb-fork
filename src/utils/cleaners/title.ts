@@ -155,7 +155,7 @@ const cleanTitle = (rawData: RawTitle) => {
           totalEpisodes: misc.episodes.episodes.total,
           seasons: misc.episodes.seasons.map(season => season.number),
           years: misc.episodes.years.map(year => year.year),
-          topRatedEpisode: null, // TODO: restaurar con el campo real de episodio top al validar una serie de TV
+          topRatedEpisode: misc.episodes.topRated.edges[0]?.node.ratingsSummary.aggregateRating ?? null,
         },
       }),
     },
