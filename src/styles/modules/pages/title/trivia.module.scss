@@ -1,0 +1,49 @@
+@use '../../../abstracts' as helper;
+
+.container {
+  --doc-whitespace: var(--spacer-8);
+
+  display: grid;
+  gap: var(--doc-whitespace);
+  padding: var(--doc-whitespace);
+  align-items: start;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-areas: 'card card card . .' 'results results results results results';
+
+  @include helper.bp('bp-900') {
+    grid-template-columns: none;
+    grid-template-areas: 'card' 'results';
+  }
+  @include helper.bp('bp-700') { --doc-whitespace: var(--spacer-5); }
+  @include helper.bp('bp-450') { --doc-whitespace: var(--spacer-3); }
+}
+
+.card { grid-area: card; }
+.results { grid-area: results; display: grid; gap: var(--spacer-5); }
+
+.item {
+  padding-block-end: var(--spacer-4);
+  border-block-end: 1px solid var(--clr-fill-muted);
+
+  &:last-child { border-block-end: none; }
+
+  a { color: var(--clr-accent); }
+}
+
+.spoiler {
+  summary {
+    cursor: pointer;
+    color: var(--clr-accent);
+    font-weight: 700;
+    margin-block-end: var(--spacer-2);
+  }
+}
+
+.category {
+  display: inline-block;
+  font-size: var(--fs-9);
+  color: var(--clr-text-muted);
+  margin-block-end: var(--spacer-1);
+}
+
+.noResults { padding: var(--spacer-5); text-align: center; }
