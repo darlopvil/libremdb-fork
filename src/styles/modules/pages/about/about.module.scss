@@ -117,3 +117,19 @@
     color: var(--clr-fill);
   }
 }
+
+.fork {
+  &__intro {
+    max-width: 70ch;
+    margin-inline: auto;
+    margin-block-end: var(--spacer-5);
+    text-align: center;
+
+    code {
+      padding-inline: var(--spacer-1);
+      background-color: var(--clr-bg-accent);
+      border-radius: var(--border-radius-1);
+      font-family: monospace;
+    }
+  }
+}

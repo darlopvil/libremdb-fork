@@ -77,6 +77,116 @@ const About = () => {
             </li>
           </ul>
         </section>
+                <section id='fork' className={styles.faqs}>
+          <h2 className={`heading heading__secondary ${styles.faqs__heading}`}>
+            Sobre este fork
+          </h2>
+          <p className={styles.fork__intro}>
+            Esta instancia ejecuta{' '}
+            <a
+              href='https://github.com/darlopvil/libremdb-fork'
+              className='link'
+              target='_blank'
+              rel='noreferrer'
+            >
+              darlopvil/libremdb-fork
+            </a>
+            , una versión modificada de{' '}
+            <a
+              href='https://github.com/zyachel/libremdb'
+              className='link'
+              target='_blank'
+              rel='noreferrer'
+            >
+              libremdb
+            </a>{' '}
+            de Ashish (zyachel). El fork nació para mantener el proyecto en
+            funcionamiento después de que IMDb dejara de servir el bloque{' '}
+            <code>__NEXT_DATA__</code> del que dependían todos los fetchers, lo
+            que devolvía un error 500 en toda la aplicación.
+          </p>
+          <ul className={styles.faqs__list}>
+            <li className={styles.faq}>
+              <details>
+                <summary className={styles.faq__summary}>
+                  Migración a la API GraphQL de IMDb
+                </summary>
+                <div className={styles.faq__description}>
+                  Los cinco fetchers (título, persona, búsqueda, reseñas y
+                  listas) se reescribieron para consumir la API GraphQL interna
+                  de IMDb en lugar de raspar el HTML. Cada identificador recibido
+                  por URL se valida antes de interpolarlo en la consulta para
+                  evitar inyección.
+                </div>
+              </details>
+            </li>
+            <li className={styles.faq}>
+              <details>
+                <summary className={styles.faq__summary}>
+                  Reseñas sin necesidad de iniciar sesión
+                </summary>
+                <div className={styles.faq__description}>
+                  La API GraphQL devuelve las reseñas de usuario sin sesión
+                  iniciada, lo que resuelve la limitación por la que IMDb había
+                  empezado a exigir cuenta para verlas.
+                </div>
+              </details>
+            </li>
+            <li className={styles.faq}>
+              <details>
+                <summary className={styles.faq__summary}>
+                  Páginas nuevas: episodios y curiosidades
+                </summary>
+                <div className={styles.faq__description}>
+                  Se añadieron una página de episodios para series (con filtros
+                  por temporada, orden y dirección) y una página de curiosidades
+                  (trivia) con las entradas marcadas como spoiler ocultas tras un
+                  desplegable.
+                </div>
+              </details>
+            </li>
+            <li className={styles.faq}>
+              <details>
+                <summary className={styles.faq__summary}>
+                  Ficha de título ampliada
+                </summary>
+                <div className={styles.faq__description}>
+                  Se muestran las fechas de estreno y los títulos alternativos
+                  por país (destacando el país configurado), las preguntas
+                  frecuentes con su respuesta, y el episodio mejor valorado en la
+                  ficha de las series.
+                </div>
+              </details>
+            </li>
+            <li className={styles.faq}>
+              <details>
+                <summary className={styles.faq__summary}>
+                  Datos localizados
+                </summary>
+                <div className={styles.faq__description}>
+                  Los datos de IMDb (título, sinopsis, géneros, intereses,
+                  palabras clave, países, idiomas y calificación por edades) se
+                  sirven en el idioma y país configurados en la instancia. La
+                  interfaz permanece en inglés.
+                </div>
+              </details>
+            </li>
+            <li className={styles.faq}>
+              <details>
+                <summary className={styles.faq__summary}>
+                  Imágenes en color y con privacidad
+                </summary>
+                <div className={styles.faq__description}>
+                  Se corrigió un fallo por el que las imágenes se mostraban en
+                  blanco y negro (una versión antigua de la librería sharp
+                  procesaba mal el color en CPUs sin AVX2). Además, toda la media
+                  se sirve a través del proxy interno, de modo que el navegador
+                  nunca contacta directamente con IMDb.
+                </div>
+              </details>
+            </li>
+          </ul>
+        </section>
         <section id='faq' className={styles.faqs}>
           <h2 className={`heading heading__secondary ${styles.faqs__heading}`}>
             Questions you may have
