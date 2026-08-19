@@ -1,3 +1,42 @@
+# libremdb — fork de darlopvil
+
+> Fork de [libremdb](https://github.com/zyachel/libremdb) (Ashish / zyachel), mantenido para una instancia privada.
+> El contenido original del proyecto se conserva más abajo.
+
+## Motivo del fork
+
+IMDb dejó de servir el bloque `<script id="__NEXT_DATA__">` a peticiones que no son de navegador (403 con user-agent de bot, 202 con cuerpo vacío), lo que rompía todos los fetchers y devolvía un error 500 en toda la aplicación. Este fork migra el scraping a la **API GraphQL interna de IMDb** (`api.graphql.imdb.com`, cabecera `x-imdb-client-name: imdb-web-next-localized`, sin autenticación).
+
+## Cambios respecto a upstream
+
+**Migración a GraphQL**
+- Los cinco fetchers (título, persona, búsqueda, reseñas, listas) reescritos sobre la API GraphQL. Transporte compartido en `src/utils/imdbGraphql.ts`; cada fetcher con su fichero de query. Todos sanean el ID recibido por URL antes de interpolarlo (anti-inyección).
+- Las reseñas de usuario se obtienen sin necesidad de iniciar sesión.
+
+**Funcionalidades nuevas**
+- Página de **episodios** para series, con filtros por temporada, orden y dirección.
+- Página de **trivia**, con las entradas marcadas como spoiler ocultas tras un desplegable.
+- Ficha de título ampliada: fechas de estreno y títulos alternativos por país (destacando el país configurado), preguntas frecuentes con respuesta, y episodio mejor valorado en las series.
+
+**Localización**
+- Los datos de IMDb se sirven en el idioma y país configurados mediante `IMDB_LANGUAGE` e `IMDB_COUNTRY` (título, sinopsis, géneros, keywords, países, calificación por edad). La trivia, los goofs, las quotes y las FAQs no se traducen (contenido de usuario). La interfaz permanece en inglés.
+
+**Imágenes**
+- Corregido el fallo por el que las imágenes se mostraban en blanco y negro: sharp 0.33.1 (libvips 8.15) procesaba mal el color al redimensionar en CPUs sin AVX2. Actualizado a sharp 0.35.3 (libvips 8.18.3).
+- Toda la media se sirve a través del proxy interno (`/api/media_proxy`); el navegador nunca contacta directamente con IMDb.
+
+## Variables de entorno adicionales
+
+| Variable | Ejemplo | Descripción |
+|---|---|---|
+| `NEXT_PUBLIC_COUNTRY` | `ES` | País destacado en fechas de estreno y títulos alternativos. |
+| `IMDB_LANGUAGE` | `es-ES` | Idioma de los datos de IMDb. |
+| `IMDB_COUNTRY` | `ES` | País de los datos de IMDb. Necesario junto a `IMDB_LANGUAGE` para la localización completa. |
+
+---
+
+<!-- README original de upstream a continuación -->
+
 # libremdb
 
 A free & open source IMDb front-end.
