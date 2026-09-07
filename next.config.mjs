@@ -10,7 +10,7 @@ const nextConfig = {
         permanent: true,
       },
       {
-        source: '/:langcode(\\w{2})/:slug*',
+        source: '/:langcode(\\w{2}-\\w{2}|\\w{2})/:slug*',
         destination: '/:slug*',
         permanent: true,
       },
